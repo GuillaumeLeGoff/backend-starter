@@ -3,6 +3,11 @@ import { NextFunction, Request, Response } from "express";
 import { Inject, Service } from "typedi";
 import { PlaylistService } from "./playlist.service";
 import { CreatePlaylistDto } from "./playlist.validation";
+import { UserPayload } from "../../types/UserPayload";
+
+interface CustomRequest extends Request {
+  user?: UserPayload;
+}
 
 @Service()
 export class PlaylistController {
@@ -10,19 +15,34 @@ export class PlaylistController {
     @Inject(() => PlaylistService) private playlistService: PlaylistService
   ) {}
 
-  createPlaylist = async (req: Request, res: Response, next: NextFunction) => {
+  createPlaylist = async (
+    req: CustomRequest,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
+      
+
       const playlistData = req.body as CreatePlaylistDto;
-      const newPlaylist: Playlist = await this.playlistService.createPlaylist(
-        playlistData
-      );
+      console.log({
+        ...playlistData,
+        userId: req.user.id,
+      })
+      const newPlaylist: Playlist = await this.playlistService.createPlaylist({
+        ...playlistData,
+        userId: req.user.id,
+      });
       res.status(201).json({ data: newPlaylist, message: "created" });
     } catch (error) {
       next(error);
     }
   };
 
-  getPlaylistById = async (req: Request, res: Response, next: NextFunction) => {
+  getPlaylistById = async (
+    req: CustomRequest,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const playlistId: number = parseInt(req.params.playlistId);
       const playlist: Playlist | null =
@@ -37,17 +57,26 @@ export class PlaylistController {
     }
   };
 
-  getAllPlaylists = async (req: Request, res: Response, next: NextFunction) => {
+  getUserPlaylists = async (
+    req: CustomRequest,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
-      const playlists: Playlist[] =
-        await this.playlistService.getAllPlaylists();
-      res.status(200).json({ data: playlists, message: "found" });
+      const playlists: Playlist[] = await this.playlistService.getUserPlaylists(
+        req.user.id
+      );
+      res.status(200).json({ data: playlists, message: "playlists retrieved" });
     } catch (error) {
       next(error);
     }
   };
 
-  updatePlaylist = async (req: Request, res: Response, next: NextFunction) => {
+  updatePlaylist = async (
+    req: CustomRequest,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const playlistId: number = parseInt(req.params.playlistId);
       const playlistData = req.body as CreatePlaylistDto;
@@ -63,7 +92,11 @@ export class PlaylistController {
     }
   };
 
-  deletePlaylist = async (req: Request, res: Response, next: NextFunction) => {
+  deletePlaylist = async (
+    req: CustomRequest,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const playlistId: number = parseInt(req.params.playlistId);
       const deletedPlaylist: Playlist | null =

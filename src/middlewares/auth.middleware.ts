@@ -1,6 +1,7 @@
 import { HttpException } from "../exceptions/HttpException";
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
+import { UserPayload } from "../types/UserPayload";
 
 const prisma = new PrismaClient();
 const getAuthorization = (req) => {
@@ -15,7 +16,6 @@ const getAuthorization = (req) => {
 
 export const authMiddleware = async (req, res, next) => {
   const token = getAuthorization(req);
-
   if (!token) {
     return next(
       new HttpException(
@@ -25,18 +25,23 @@ export const authMiddleware = async (req, res, next) => {
     );
   }
 
+ 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    const currentTime = Date.now() / 1000; 
+    const decoded = jwt.verify(token, process.env.JWT_SECRET) as UserPayload;
+    req.user = decoded; // Ajouter l'utilisateur à l'objet Request
+
+    
+    const currentTime = Math.floor(Date.now() / 1000);
+
     if (decoded.exp < currentTime) {
       const newToken = jwt.sign(
-        { userId: decoded.userId, sessionId: decoded.sessionId },
+        { id: decoded.id },
         process.env.JWT_SECRET,
         { expiresIn: "1h" }
       );
-      req.header("x-auth-token", newToken); 
+      res.setHeader("x-auth-token", newToken);
     }
+
 
     next();
   } catch (err) {

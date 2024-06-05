@@ -19,12 +19,10 @@ export class PlaylistService {
   }
 
   async createPlaylist(playlistData: CreatePlaylistDto): Promise<Playlist> {
-    console.log(playlistData);
-
     const playlist = await prisma.playlist.create({
       data: {
         name: playlistData.name,
-        user_id: playlistData.user_id,
+        user_id: playlistData.userId,
       },
     });
     console.log(playlist);
@@ -50,5 +48,11 @@ export class PlaylistService {
       where: { id },
     });
     return playlist;
+  }
+
+  async getUserPlaylists(userId: number): Promise<Playlist[]> {
+    return prisma.playlist.findMany({
+      where: { user_id: userId },
+    });
   }
 }
