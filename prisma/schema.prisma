@@ -13,68 +13,68 @@ model User {
   id           Int           @id @default(autoincrement())
   username     String        @unique
   password     String
-  role           String          @default("USER") //Role: USER, ADMIN
+  role         String        @default("USER") //Role: USER, ADMIN
   userSettings UserSettings?
   media        Media[]
   playlists    Playlist[]
 }
 
 model UserSettings {
-  user_id Int    @id
+  user_id  Int    @id
   language String
   user     User   @relation(fields: [user_id], references: [id])
 }
 
 model Media {
- id                 Int             @id @default(autoincrement())
+  id                 Int       @id @default(autoincrement())
   original_file_name String
   file_name          String
   path               String
   format             String
   type               String
   size               Int
-  uploaded_at        DateTime        @updatedAt()
+  uploaded_at        DateTime  @updatedAt()
   user_id            Int
-  user               User            @relation(fields: [user_id], references: [id])
-  Playlist_media     PlaylistMedia[]
+  duration           Int
+  position           Int
+  user               User      @relation(fields: [user_id], references: [id])
+  Playlist           Playlist? @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  playlistId         Int?
 }
 
 model Playlist {
-  id        Int             @id @default(autoincrement())
-  name      String
-  user_id   Int
-  user      User            @relation(fields: [user_id], references: [id])
-  media     PlaylistMedia[]
+  id      Int     @id @default(autoincrement())
+  name    String
+  user_id Int
+  user    User    @relation(fields: [user_id], references: [id])
+  medias  Media[] @relation
+  Mode    Mode[]
 }
 
-model PlaylistMedia {
-  id                   Int      @id @default(autoincrement())
-  media_id             Int
-  playlist_id          Int
-  media_dur_in_playlist Int
-  media_pos_in_playlist Int
-  media                Media    @relation(fields: [media_id], references: [id])
-  playlist             Playlist @relation(fields: [playlist_id], references: [id])
+model Mode {
+  id          Int       @id @default(autoincrement())
+  mode        String?
+  playlist_id Int?
+  playlist    Playlist? @relation(fields: [playlist_id], references: [id])
 }
 
 model GlobalSettings {
-  id                  Int      @id @default(autoincrement())
-  standby             Boolean
-  standby_start_time  Int
-  standby_end_time    Int
-  restart_at          Int
+  id                 Int     @id @default(autoincrement())
+  standby            Boolean
+  standby_start_time Int
+  standby_end_time   Int
+  restart_at         Int
 }
 
 model Data {
-  id              Int      @id @default(autoincrement())
-  data_string_1   String
-  data_string_2   String
-  data_string_3   String
-  data_int_1      Int
-  data_int_2      Int
-  data_int_3      Int
-  data_boolean_1  Boolean
-  data_boolean_2  Boolean
-  data_boolean_3  Boolean
+  id             Int     @id @default(autoincrement())
+  data_string_1  String
+  data_string_2  String
+  data_string_3  String
+  data_int_1     Int
+  data_int_2     Int
+  data_int_3     Int
+  data_boolean_1 Boolean
+  data_boolean_2 Boolean
+  data_boolean_3 Boolean
 }
-

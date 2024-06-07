@@ -2,6 +2,10 @@ import { PrismaClient, User } from "@prisma/client";
 import { Service } from "typedi";
 import bcrypt from "bcrypt";
 import { HttpException } from "../../exceptions/HttpException"; // Make sure the import path is correct
+import * as fs from "fs";
+import * as path from "path";
+import { promisify } from "util";
+const mkdir = promisify(fs.mkdir);
 const prisma = new PrismaClient();
 @Service()
 export class UserService {
@@ -18,12 +22,26 @@ export class UserService {
     }
 
     const hashedPassword = await bcrypt.hash(userData.password, 10);
-    return prisma.user.create({
+    const newUser = await prisma.user.create({
       data: {
         ...userData,
         password: hashedPassword,
       },
     });
+    const uploadPath = path.join(
+      __dirname,
+      "../../../uploads",
+      newUser.username
+    );
+    try {
+      await mkdir(uploadPath, { recursive: true });
+      console.log(`Directory created at ${uploadPath}`);
+    } catch (error) {
+      console.error(`Failed to create directory: ${error}`);
+      throw new HttpException(500, "Failed to create user directory");
+    }
+
+    return newUser;
   }
 
   public async findUserById(userId: number): Promise<User> {

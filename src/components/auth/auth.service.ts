@@ -37,7 +37,7 @@ export class AuthService {
       },
     });
 
-    const uploadDir = path.join(__dirname, `../../uploads/${user.username}`);
+    const uploadDir = `${process.env.UPLOAD_DIR}${user.username}`;
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
@@ -62,9 +62,13 @@ export class AuthService {
       throw new HttpException(401, "Incorrect username or password");
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { id: user.id, username: user.username },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
 
     return token;
   }

@@ -91,12 +91,12 @@ CREATE TABLE "new_PlaylistMedia" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "media_id" INTEGER NOT NULL,
     "playlist_id" INTEGER NOT NULL,
-    "media_dur_in_playlist" INTEGER NOT NULL,
-    "media_pos_in_playlist" INTEGER NOT NULL,
+    "duration" INTEGER NOT NULL,
+    "position" INTEGER NOT NULL,
     CONSTRAINT "PlaylistMedia_media_id_fkey" FOREIGN KEY ("media_id") REFERENCES "Media" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "PlaylistMedia_playlist_id_fkey" FOREIGN KEY ("playlist_id") REFERENCES "Playlist" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
-INSERT INTO "new_PlaylistMedia" ("id", "media_dur_in_playlist", "media_id", "media_pos_in_playlist", "playlist_id") SELECT "id", "media_dur_in_playlist", "media_id", "media_pos_in_playlist", "playlist_id" FROM "PlaylistMedia";
+INSERT INTO "new_PlaylistMedia" ("id", "duration", "media_id", "position", "playlist_id") SELECT "id", "duration", "media_id", "position", "playlist_id" FROM "PlaylistMedia";
 DROP TABLE "PlaylistMedia";
 ALTER TABLE "new_PlaylistMedia" RENAME TO "PlaylistMedia";
 CREATE TABLE "new_Media" (

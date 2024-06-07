@@ -22,6 +22,12 @@ router.get("/", authMiddleware, extractUserId, (req, res, next) =>
 router.put("/:playlistId", authMiddleware, extractUserId, (req, res, next) =>
   playlistController.updatePlaylist(req, res, next)
 );
+router.put(
+  "/:playlistId/medias",
+  authMiddleware,
+  extractUserId,
+  (req, res, next) => playlistController.updateMediasInPlaylist(req, res, next)
+);
 
 router.delete("/:playlistId", authMiddleware, extractUserId, (req, res, next) =>
   playlistController.deletePlaylist(req, res, next)

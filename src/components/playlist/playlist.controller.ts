@@ -21,19 +21,14 @@ export class PlaylistController {
     next: NextFunction
   ) => {
     try {
-      
-
       const playlistData = req.body as CreatePlaylistDto;
-      console.log({
-        ...playlistData,
-        userId: req.user.id,
-      })
       const newPlaylist: Playlist = await this.playlistService.createPlaylist({
         ...playlistData,
-        userId: req.user.id,
+        user_id: req.user.id,
       });
       res.status(201).json({ data: newPlaylist, message: "created" });
     } catch (error) {
+      console.log(error);
       next(error);
     }
   };
@@ -107,6 +102,30 @@ export class PlaylistController {
         res.status(200).json({ message: "deleted" });
       }
     } catch (error) {
+      next(error);
+    }
+  };
+
+  updateMediasInPlaylist = async (
+    req: CustomRequest,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const playlistId: number = parseInt(req.params.playlistId);
+      const medias = req.body;
+      console.log(medias);
+
+      const updatedPlaylist: Playlist | null =
+        await this.playlistService.updateMediasInPlaylist(playlistId, medias);
+      if (!updatedPlaylist) {
+        res.status(404).json({ message: "Playlist not found" });
+      } else {
+        res.status(200).json({ data: updatedPlaylist, message: "updated" });
+      }
+    } catch (error) {
+      console.log(error);
+
       next(error);
     }
   };

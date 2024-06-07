@@ -7,6 +7,7 @@ import { HttpException } from "../../exceptions/HttpException";
 import { MediaService } from "./media.service";
 import { UserService } from "../users/users.service";
 import { Media } from "@prisma/client";
+import path from "path";
 
 @Service()
 export class UploadService {
@@ -22,11 +23,7 @@ export class UploadService {
 
   public handleUpload = async (req: any, res: any, next: NextFunction) => {
     try {
-      const user = await this.userService.findUserById(
-        parseInt(req.params.user_id, 10)
-      );
-
-      const destination = `./uploads/${user.username}`;
+      const destination = `${process.env.UPLOAD_DIR}${req.user.username}`;
 
       const upload = multer({
         storage: multer.diskStorage({
@@ -49,15 +46,19 @@ export class UploadService {
         next();
       });
     } catch (error) {
+      console.log(error);
+
       next(error);
     }
   };
 
-  public deleteMedia = async (media: Media): Promise<void> => {
+  public deleteMedia = async (media: Media, req: any): Promise<void> => {
     try {
       console.log(media);
 
-      unlinkSync(media.path);
+      unlinkSync(
+        `${process.env.UPLOAD_DIR}${req.user.username}/${media.file_name}`
+      );
     } catch (error) {
       console.log(error);
 

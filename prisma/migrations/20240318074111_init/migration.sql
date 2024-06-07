@@ -14,8 +14,8 @@ CREATE TABLE "PlaylistMedia" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "media_id" INTEGER NOT NULL,
     "playlist_id" INTEGER NOT NULL,
-    "media_dur_in_playlist" INTEGER NOT NULL DEFAULT 1,
-    "media_pos_in_playlist" INTEGER NOT NULL DEFAULT 1,
+    "duration" INTEGER NOT NULL DEFAULT 1,
+    "position" INTEGER NOT NULL DEFAULT 1,
     CONSTRAINT "PlaylistMedia_media_id_fkey" FOREIGN KEY ("media_id") REFERENCES "Media" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "PlaylistMedia_playlist_id_fkey" FOREIGN KEY ("playlist_id") REFERENCES "Playlist" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
