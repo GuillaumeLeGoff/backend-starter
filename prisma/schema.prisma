@@ -67,14 +67,14 @@ model GlobalSettings {
 }
 
 model Data {
-  id             Int     @id @default(autoincrement())
-  data_string_1  String
-  data_string_2  String
-  data_string_3  String
-  data_int_1     Int
-  data_int_2     Int
-  data_int_3     Int
-  data_boolean_1 Boolean
-  data_boolean_2 Boolean
-  data_boolean_3 Boolean
+  id             Int      @id @default(autoincrement())
+  data_string_1  String?
+  data_string_2  String?
+  data_string_3  String?
+  data_int_1     Int?
+  data_int_2     Int?
+  data_int_3     Int?
+  data_boolean_1 Boolean?
+  data_boolean_2 Boolean?
+  data_boolean_3 Boolean?
 }

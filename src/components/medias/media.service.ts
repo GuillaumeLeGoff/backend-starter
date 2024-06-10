@@ -12,7 +12,6 @@ export class MediaService {
 
     // Résoudre la durée avant de créer l'objet media
     const mediaDuration = await this.getDuration(file.path, file.mimetype);
-    console.log(req.user);
     const media = {
       original_file_name: file.originalname,
       file_name: file.filename,

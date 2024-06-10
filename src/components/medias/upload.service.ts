@@ -54,8 +54,6 @@ export class UploadService {
 
   public deleteMedia = async (media: Media, req: any): Promise<void> => {
     try {
-      console.log(media);
-
       unlinkSync(
         `${process.env.UPLOAD_DIR}${req.user.username}/${media.file_name}`
       );

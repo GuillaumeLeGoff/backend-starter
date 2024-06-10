@@ -29,8 +29,6 @@ export class UserSettingController {
   };
 
   getUserSetting = async (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.params.userId);
-
     try {
       const userSetting: UserSettings[] | null =
         await this.userSettingService.findAllUserSetting();
@@ -49,8 +47,6 @@ export class UserSettingController {
     res: Response,
     next: NextFunction
   ) => {
-    console.log(req.params.userId);
-
     try {
       const userId = Number(req.params.userId);
 

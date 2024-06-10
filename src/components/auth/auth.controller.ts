@@ -2,11 +2,7 @@ import { User } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import { Inject, Service } from "typedi";
 import { AuthService } from "./auth.service";
-import {
-  CreateUserDto,
-  LoginUserDto,
-  RegisterDto,
-} from "./auth.validation";
+import { CreateUserDto, LoginUserDto, RegisterDto } from "./auth.validation";
 
 @Service()
 export class AuthController {
@@ -25,8 +21,6 @@ export class AuthController {
   };
 
   login = async (req: Request, res: Response, next: NextFunction) => {
-    console.log("login", req.body);
-
     try {
       const credentials: LoginUserDto = req.body;
       const token = await this.authService.login(credentials);

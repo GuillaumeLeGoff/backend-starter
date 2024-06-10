@@ -9,8 +9,6 @@ interface PlaylistWithMedia extends Playlist {
 @Service()
 export class PlaylistService {
   async getAllPlaylists(): Promise<Playlist[]> {
-    console.log("getAllPlaylists");
-
     const playlists = await prisma.playlist.findMany({
       include: {
         medias: true,
@@ -36,7 +34,6 @@ export class PlaylistService {
         user_id: playlistData.user_id,
       },
     });
-    console.log(playlist);
 
     return playlist;
   }
@@ -80,28 +77,24 @@ export class PlaylistService {
   }
 
   async updateMediasInPlaylist(id: number, medias: Media[]): Promise<Playlist> {
-    // D'abord, dissocier tous les médias actuellement liés
-    console.log("updateMediasInPlaylist", medias);
-
-    await prisma.playlist.update({
+    const playlist = await prisma.playlist.findUnique({
       where: { id },
-      data: {
-        medias: {
-          set: [],
-        },
-      },
+      include: { medias: true },
     });
 
-    // Ensuite, associer les nouveaux médias
-    const updatedPlaylist = await prisma.playlist.update({
-      where: { id },
-      data: {
-        medias: {
-          connect: medias.map((media) => ({ id: media.id })),
-        },
-      },
-    });
+    if (!playlist) throw new Error("Playlist not found");
 
-    return updatedPlaylist;
+    // Mise à jour de l'ordre des médias
+    for (const media of medias) {
+      await prisma.media.update({
+        where: { id: media.id },
+        data: { position: media.position },
+      });
+    }
+
+    return prisma.playlist.findUnique({
+      where: { id },
+      include: { medias: true },
+    });
   }
 }

@@ -23,8 +23,6 @@ export class UserSettingService {
     });
 
     if (userSettings) {
-      console.log(userSettingData.user_id);
-
       throw new HttpException(
         404,
         `User setting for user with ID ${userSettingData.user_id} already exists.`

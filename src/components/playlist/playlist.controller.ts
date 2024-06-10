@@ -114,7 +114,6 @@ export class PlaylistController {
     try {
       const playlistId: number = parseInt(req.params.playlistId);
       const medias = req.body;
-      console.log(medias);
 
       const updatedPlaylist: Playlist | null =
         await this.playlistService.updateMediasInPlaylist(playlistId, medias);

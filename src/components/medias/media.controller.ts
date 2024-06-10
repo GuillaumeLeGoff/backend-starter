@@ -62,10 +62,8 @@ export class MediaController {
 
   updateMedia = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      console.log("media", req.body);
       const { media_id } = req.params;
       const media = req.body;
-
       const updatedMedia = await this.mediaService.updateMedia(
         parseInt(media_id),
         media
